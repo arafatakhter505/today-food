@@ -42,10 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$userHasAddedFoodToday) {
  * @return array
  */
 function getFoodListsForToday($pdo) {
+    $today = date('Y-m-d');
     $sql = "SELECT food_lists.item, users.full_name 
             FROM users 
             JOIN food_lists ON food_lists.user_id = users.id 
-            WHERE DATE(food_lists.date) = CURDATE()";
+            WHERE DATE(food_lists.date) = '$today'";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -76,7 +77,8 @@ function getUserIdByUsername($pdo, $username) {
  * @return bool
  */
 function checkUserFoodToday($pdo, $userId) {
-    $sql = "SELECT COUNT(*) FROM food_lists WHERE user_id = :user_id AND DATE(date) = CURDATE()";
+    $today = date('Y-m-d');
+    $sql = "SELECT COUNT(*) FROM food_lists WHERE user_id = :user_id AND DATE(date) = '$today'";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':user_id' => $userId]);
 
